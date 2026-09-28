@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ORBIT — Personal Web Workspace</title>
+<style>
+:root{--accent:#9b8cff;--glass:rgba(18,20,39,.72);--line:rgba(255,255,255,.14);--text:#f5f4ff;--muted:#aaa9c6}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);height:100vh;overflow:hidden;background:#090b18}
+button,input,textarea{font:inherit}button{cursor:pointer;color:inherit;border:0}
+.wallpaper{position:fixed;inset:0;background:radial-gradient(ellipse at 15% 25%,rgba(255,93,154,.48) 0,transparent 34%),radial-gradient(ellipse at 78% 20%,rgba(70,130,255,.48) 0,transparent 32%),radial-gradient(ellipse at 72% 82%,rgba(36,214,190,.38) 0,transparent 38%),linear-gradient(145deg,#090d22,#17102f 48%,#071a2a);z-index:-2;overflow:hidden}.wallpaper:before{content:"";position:absolute;width:65vw;height:65vw;left:18%;top:15%;border-radius:50%;background:conic-gradient(from 40deg,transparent,rgba(255,255,255,.09),transparent,rgba(255,255,255,.06),transparent);filter:blur(3px);animation:drift 28s linear infinite}@keyframes drift{to{transform:rotate(360deg)}}
+.wallpaper:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent)}
+.topbar{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(8,10,25,.38);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.08);font-size:12px}
+.brand{font-weight:800;letter-spacing:3px}.brand span{color:#a99cff}.top-right{display:flex;gap:18px;color:#d8d6ef}
+.desktop{height:calc(100vh - 42px);position:relative;padding:28px}
+.welcome{position:absolute;right:7%;top:12%;text-align:right;pointer-events:none}.welcome h1{font-size:clamp(32px,5vw,66px);margin:0;letter-spacing:-3px}.welcome p{color:#c3c0df;margin:8px 0}
+.icons{display:grid;grid-template-columns:90px;gap:12px;width:100px}
+.desk-icon{background:transparent;border:1px solid transparent;border-radius:15px;padding:12px 6px;display:grid;justify-items:center;gap:8px;color:#f6f4ff;text-shadow:0 2px 8px #0008}.desk-icon:hover,.desk-icon:focus{background:#ffffff18;border-color:#ffffff20;outline:none}.glyph{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:23px;background:linear-gradient(145deg,#ffffff35,#ffffff0c);border:1px solid #ffffff35;box-shadow:0 10px 24px #0003}.desk-icon small{font-size:12px}
+.dock{position:absolute;bottom:17px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:9px 12px;background:rgba(13,15,34,.72);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(24px);box-shadow:0 18px 55px #0006}
+.dock button{width:45px;height:43px;border-radius:13px;background:transparent;font-size:21px;transition:.18s}.dock button:hover{background:#ffffff20;transform:translateY(-7px) scale(1.08)}.dock .sep{height:28px;width:1px;background:var(--line);margin:0 4px}
+.window{position:absolute;left:18%;top:12%;width:min(760px,76vw);height:min(520px,68vh);min-width:300px;min-height:230px;background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:0 28px 90px #0008;backdrop-filter:blur(28px);overflow:hidden;display:none;flex-direction:column}
+.window.show{display:flex}.window.max{left:10px!important;top:52px!important;width:calc(100% - 20px)!important;height:calc(100% - 132px)!important}
+.win-head{height:48px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#ffffff09;border-bottom:1px solid var(--line);cursor:move;user-select:none}.win-title{font-size:13px;font-weight:650;display:flex;gap:10px;align-items:center}.controls{display:flex;gap:7px}.controls button{width:11px;height:11px;border-radius:50%;background:#8b88a9}.controls button:nth-child(1){background:#f6c85f}.controls button:nth-child(2){background:#68d6a4}.controls button:nth-child(3){background:#f0788b}.win-body{padding:20px;overflow:auto;flex:1}
+.panel{background:#ffffff0b;border:1px solid var(--line);border-radius:14px;padding:16px}.muted{color:var(--muted)}.primary{background:linear-gradient(120deg,#8878f7,#4fb9cf);padding:10px 15px;border-radius:10px;color:white}.field{width:100%;padding:11px 12px;background:#090d20aa;border:1px solid var(--line);border-radius:9px;color:white;outline:none}.field:focus{border-color:#a99cff}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.apphead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.apphead h2{margin:0;font-size:21px}.stat{font-size:28px;font-weight:750;margin:8px 0}.note{min-height:260px;resize:vertical;line-height:1.6}.calc{max-width:330px;margin:auto}.calc-display{text-align:right;font-size:30px;padding:18px;margin-bottom:10px;background:#080b1b;border-radius:12px}.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.keys button{padding:15px 4px;border-radius:10px;background:#ffffff13}.keys button:hover{background:#9b8cff55}.keys .op{background:#8878f755}
+.todo-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.todo-row input{accent-color:#a99cff}.todo-row span{flex:1}.todo-row.done span{text-decoration:line-through;color:var(--muted)}
+.browserbar{display:flex;gap:8px;margin-bottom:14px}.browserbar input{flex:1}.quicklinks{display:flex;gap:10px;flex-wrap:wrap}.quicklinks button{padding:12px;background:#ffffff10;border:1px solid var(--line);border-radius:10px}
+.toast{position:absolute;right:20px;top:58px;padding:13px 17px;border:1px solid var(--line);background:#11152beF;border-radius:12px;box-shadow:0 12px 35px #0006;display:none}
+@media(max-width:650px){.desktop{padding:16px}.welcome{top:auto;bottom:105px;right:18px}.welcome h1{font-size:34px}.window{left:3%!important;top:8%!important;width:94vw!important;height:72vh!important}.dock{gap:2px;padding:7px}.dock button{width:39px}.topbar{padding:0 12px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wallpaper"></div>
+<header class="topbar"><div class="brand">✦ <span>ORBIT</span> WORKSPACE</div><div class="top-right"><span id="day">MON</span><span id="clock">--:--</span><span>◉ Online</span></div></header>
+<main class="desktop" id="desktop">
+  <section class="icons">
+    <button class="desk-icon" onclick="openApp('files')"><span class="glyph">▤</span><small>My Space</small></button>
+    <button class="desk-icon" onclick="openApp('notes')"><span class="glyph">✎</span><small>Notes</small></button>
+    <button class="desk-icon" onclick="openApp('tasks')"><span class="glyph">☑</span><small>Tasks</small></button>
+    <button class="desk-icon" onclick="openApp('browser')"><span class="glyph">◎</span><small>Explore</small></button>
+    <button class="desk-icon" onclick="openApp('calculator')"><span class="glyph">∑</span><small>Calculator</small></button>
+    <button class="desk-icon" onclick="openApp('control')"><span class="glyph">⚙</span><small>Appearance</small></button>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <div class="dock">
+    <button title="Overview" onclick="showToast('ORBIT workspace is ready')">✦</button><span class="sep"></span>
+    <button title="My Space" onclick="openApp('files')">▤</button><button title="Notes" onclick="openApp('notes')">✎</button><button title="Tasks" onclick="openApp('tasks')">☑</button><button title="Explore" onclick="openApp('browser')">◎</button><button title="Calculator" onclick="openApp('calculator')">∑</button><span class="sep"></span><button title="Appearance" onclick="openApp('control')">⚙</button>
+  </div>
+</main>
+<script>
+const windows={};
+const appInfo={
+ files:['▤','My Space'],notes:['✎','Notes'],tasks:['☑','Tasks'],browser:['◎','Explore'],calculator:['∑','Calculator'],control:['⚙','Appearance']
+};
+function openApp(id){
+ if(windows[id]){windows[id].classList.add('show');windows[id].style.zIndex=++z;return}
+ const [ico,title]=appInfo[id];let content='';
+ if(id==='files')content=`<div class="apphead"><div><h2>My Space</h2><div class="muted">A simple place for your workspace</div></div><span>▤</span></div><div class="grid2"><div class="panel">📁 <b>Documents</b><p class="muted">Your notes and drafts</p></div><div class="panel">🖼️ <b>Gallery</b><p class="muted">A space for inspiration</p></div><div class="panel">⭐ <b>Favorites</b><p class="muted">Things worth keeping</p></div><div class="panel">⬇️ <b>Recent</b><p class="muted">Your latest activity</p></div></div><p class="muted" style="margin-top:18px">This is a visual workspace demo. It does not access your computer's private files.</p>`;
+ if(id==='notes')content=`<div class="apphead"><div><h2>Quick Notes</h2><div class="muted">Your thoughts stay in this browser</div></div><button class="primary" onclick="saveNote()">Save</button></div><textarea id="note" class="field note" placeholder="Start writing something brilliant..."></textarea><p class="muted" id="noteStatus" style="margin-top:8px">Saved locally in this browser when you press Save.</p>`;
+ if(id==='tasks')content=`<div class="apphead"><div><h2>Today’s focus</h2><div class="muted">Small steps make big progress</div></div></div><form onsubmit="addTask(event)" style="display:flex;gap:8px;margin-bottom:14px"><input id="taskInput" class="field" placeholder="Add a task..." required><button class="primary">Add</button></form><div id="taskList"></div>`;
+ if(id==='browser')content=`<div class="apphead"><div><h2>Explore</h2><div class="muted">Jump into the web</div></div></div><form class="browserbar" onsubmit="goWeb(event)"><input id="webQuery" class="field" placeholder="Search or enter a website"><button class="primary">Go</button></form><div class="quicklinks"><button onclick="visit('https://www.google.com')">Google ↗</button><button onclick="visit('https://www.wikipedia.org')">Wikipedia ↗</button><button onclick="visit('https://github.com')">GitHub ↗</button><button onclick="visit('https://www.youtube.com')">YouTube ↗</button></div><p class="muted" style="margin-top:20px">External websites open in a new tab.</p>`;
+ if(id==='calculator')content=`<div class="calc"><div class="apphead"><div><h2>Calculator</h2><div class="muted">Quick calculations</div></div></div><div id="calcDisplay" class="calc-display">0</div><div class="keys">${['C','⌫','%','÷','7','8','9','×','4','5','6','-','1','2','3','+','±','0','.','='].map(k=>`<button class="${'÷×-+'.includes(k)?'op':''}" onclick="calcKey('${k}')">${k}</button>`).join('')}</div></div>`;
+ if(id==='control')content=`<div class="apphead"><div><h2>Appearance</h2><div class="muted">Make this space feel like yours</div></div></div><div class="panel"><b>Accent colour</b><p class="muted">Choose a workspace highlight</p><div style="display:flex;gap:12px;margin-top:14px">${['#9b8cff','#55c7d8','#f08ab5','#8dd6a5','#f0b65e'].map(c=>`<button aria-label="Choose accent" onclick="setAccent('${c}')" style="width:34px;height:34px;border-radius:50%;background:${c};border:3px solid #ffffff55"></button>`).join('')}</div></div><div class="panel" style="margin-top:12px"><b>Workspace</b><p class="muted">ORBIT is a browser-based desktop concept. Your notes and tasks are stored locally.</p></div>`;
+ const w=document.createElement('section');w.className='window show';w.id='win-'+id;w.style.zIndex=++z;w.innerHTML=`<div class="win-head"><div class="win-title"><span>${ico}</span>${title}</div><div class="controls"><button title="Minimize" onclick="this.closest('.window').classList.remove('show')"></button><button title="Maximize" onclick="this.closest('.window').classList.toggle('max')"></button><button title="Close" onclick="this.closest('.window').remove();delete windows['${id}']"></button></div></div><div class="win-body">${content}</div>`;
+ document.getElementById('desktop').appendChild(w);windows[id]=w;makeDraggable(w);
+ if(id==='notes')document.getElementById('note').value=localStorage.orbitNote||'';
+ if(id==='tasks')renderTasks();
+}
+let z=10;function makeDraggable(w){const h=w.querySelector('.win-head');let x=0,y=0,drag=false;h.addEventListener('pointerdown',e=>{if(e.target.tagName==='BUTTON'||w.classList.contains('max'))return;drag=true;x=e.clientX-w.offsetLeft;y=e.clientY-w.offsetTop;h.setPointerCapture(e.pointerId);w.style.zIndex=++z});h.addEventListener('pointermove',e=>{if(!drag)return;w.style.left=Math.max(0,Math.min(innerWidth-w.offsetWidth,e.clientX-x))+'px';w.style.top=Math.max(43,Math.min(innerHeight-100,e.clientY-y))+'px'});h.addEventListener('pointerup',()=>drag=false);w.addEventListener('pointerdown',()=>w.style.zIndex=++z)}
+function showToast(t){const e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2200)}
+function saveNote(){localStorage.orbitNote=document.getElementById('note').value;document.getElementById('noteStatus').textContent='✓ Saved in this browser';}
+function tasks(){try{return JSON.parse(localStorage.orbitTasks||'[]')}catch{return []}}
+function renderTasks(){const list=document.getElementById('taskList');if(!list)return;list.innerHTML=tasks().map((t,i)=>`<div class="todo-row ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${i})"><span>${escapeHTML(t.text)}</span><button onclick="removeTask(${i})" title="Delete">×</button></div>`).join('')||'<p class="muted">Nothing here yet. Add your first task.</p>'}
+function addTask(e){e.preventDefault();const input=document.getElementById('taskInput');const a=tasks();a.push({text:input.value,done:false});localStorage.orbitTasks=JSON.stringify(a);input.value='';renderTasks()}
+function toggleTask(i){const a=tasks();a[i].done=!a[i].done;localStorage.orbitTasks=JSON.stringify(a);renderTasks()}
+function removeTask(i){const a=tasks();a.splice(i,1);localStorage.orbitTasks=JSON.stringify(a);renderTasks()}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function visit(url){window.open(url,'_blank','noopener')}
+function goWeb(e){e.preventDefault();let q=document.getElementById('webQuery').value.trim();if(!q)return;visit(/^https?:\/\//i.test(q)?q:/^[\w.-]+\.[a-z]{2,}/i.test(q)?'https://'+q:'https://www.google.com/search?q='+encodeURIComponent(q))}
+let expression='';function calcKey(k){const d=document.getElementById('calcDisplay');if(!d)return;if(k==='C'){expression='';d.textContent='0';return}if(k==='⌫'){expression=expression.slice(0,-1);d.textContent=expression||'0';return}if(k==='='){try{let safe=expression.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-').replace(/%/g,'/100');if(!/^[0-9+\-*/(). ]+$/.test(safe))throw 0;let result=Function('"use strict";return ('+safe+')')();if(!Number.isFinite(result))throw 0;expression=String(Number(result.toFixed(8)));d.textContent=expression}catch{d.textContent='Error';expression=''}return}if(k==='±'){if(expression.startsWith('-'))expression=expression.slice(1);else expression='-'+expression}else expression+=k;d.textContent=expression||'0'}
+function setAccent(c){document.documentElement.style.setProperty('--accent',c);document.querySelectorAll('.primary').forEach(b=>b.style.background=`linear-gradient(120deg,${c},#4fb9cf)`);showToast('Accent updated')}
+function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});document.getElementById('day').textContent=d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});}
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>
